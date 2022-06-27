@@ -1,0 +1,8 @@
+- name: restart ec2 instance
+  hosts: localhost
+  tasks:
+  - name: restart a particular instance by its ID
+    amazon.aws.ec2_instance:
+      state: restarted
+      instance_ids:
+        - i-017659781810f0538
