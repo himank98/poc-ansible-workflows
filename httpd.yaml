@@ -7,11 +7,13 @@
       package:
         name: httpd
         state: present
+      ignore_errors: yes
 
     - name: Copy the index page at document root
       copy:
         src: index.html
         dest: /var/www/html/index.html
+      ignore_errors: yes
 
     - name: start the server
       service:
