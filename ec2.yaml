@@ -1,6 +1,7 @@
 ---
 - name: Create a sandbox ec2 instance and provision a new httpd server
   hosts: localhost
+  connection: local
   gather_facts: true
   vars:
     keypair: tower
