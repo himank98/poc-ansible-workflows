@@ -3,32 +3,38 @@
   hosts: localhost
   gather_facts: true
   vars:
-    keypair: tower.pem
+    keypair: tower
     instance_type: t2.micro
     image: ami-05c8ca4485f8b138a
     region: ap-south-1
   tasks:
     - name: Launch an instance
-      amazon.aws.ec2_instance:
+      ec2:
         key_name: "{{ keypair }}"
+        region: "{{ region }}"
         instance_type: "{{ instance_type }}"
-        image_id: "{{ image }}"
+        image: "{{ image }}"
+        wait: true
         vpc_subnet_id: "subnet-b56899de"
-        security_group: "sg-099a4d079d097734d"
-        network:
-          assign_public_ip: true
+        group: launch-wizard-1
+        state: present
+        assign_public_ip: true
+        instance_tags:
+          Name: ansible-test
       register: ec2
 
-    - name: Add instance to the inventory
+    - name: Add instance to inventory
       add_host:
         hostname: "{{ item.public_ip }}"
-        groupname: provisioned
+        groupname: servers
       loop: "{{ ec2.instances }}"
 
-    - name: Wait for the ec2 instance to get provisioned
-      delegate_to: "{{ item.public_dns_name }}"
-      wait_for_connection:
-        delay: 120
-        timeout: 300
+    - name: Wait for ssh
+      wait_for:
+        host: "{{ item.public_dns_name }}"
+        port: 22
+        state: started
       loop: "{{ ec2.instances }}"
+
+
 
