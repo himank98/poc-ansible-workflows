@@ -1,5 +1,5 @@
 - name: Configure the webserver
-  hosts: localhost
+  hosts: servers
   become: yes
   become_method: sudo
   tasks:
